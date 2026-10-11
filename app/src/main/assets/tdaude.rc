@@ -1,0 +1,72 @@
+# TDaude shell config (mksh).
+# File này được app ghi đè mỗi lần mở. Muốn tuỳ biến riêng, hãy sửa ~/.mkshrc
+# (file đó được nạp ở cuối, nên có thể ghi đè mọi thứ ở dưới).
+
+# Giữ các thiết lập mặc định của Android (nếu có).
+[ -r /system/etc/mkshrc ] && . /system/etc/mkshrc
+
+# ---- Lịch sử lệnh: lưu lại giữa các lần mở app ----
+HISTFILE="$HOME/.sh_history"
+HISTSIZE=3000
+
+# ---- Alias gọn tay ----
+alias ll='ls -l'
+alias la='ls -la'
+alias ..='cd ..'
+alias ...='cd ../..'
+alias cls='clear'
+
+# ---- Lối tắt tới bộ nhớ trong ----
+[ -e "$HOME/sdcard" ] || ln -s /sdcard "$HOME/sdcard" 2>/dev/null
+
+# ---- Prompt màu ----
+_e=$(printf '\033')
+_b=$(printf '\007')
+_s=$(printf '\001')
+_r=$(printf '\r')
+_rs="${_s}${_e}[0m${_s}"
+_gr="${_s}${_e}[1;32m${_s}"
+_cy="${_s}${_e}[1;36m${_s}"
+_bl="${_s}${_e}[1;34m${_s}"
+_dm="${_s}${_e}[2m${_s}"
+
+# Hiển thị thư mục hiện tại, thay $HOME bằng ~
+_pwd() {
+	case "$PWD" in
+	"$HOME") printf '~' ;;
+	"$HOME"/*) printf '~/%s' "${PWD#"$HOME"/}" ;;
+	*) printf '%s' "$PWD" ;;
+	esac
+}
+
+# Đặt tiêu đề phiên (thanh trên của app hiển thị thư mục hiện tại)
+_title() {
+	printf '%s%s]0;%s%s%s' "$_s" "$_e" "$(_pwd)" "$_b" "$_s"
+}
+
+PS1="${_s}${_r}"'$(_title)'"${_gr}tdaude${_rs}${_dm}@${_rs}${_cy}android${_rs} ${_bl}"'$(_pwd)'"${_rs} "'$ '
+
+# ---- Lệnh trợ giúp ----
+tdhelp() {
+	cat <<'HELP'
+TDaude - mẹo nhanh
+  Vuốt từ mép trái (hoặc nút ≡)  : mở danh sách phiên
+  Nhấn giữ một phiên              : đổi tên
+  CTRL / ALT                      : chạm = áp dụng cho 1 phím, giữ = khoá
+  Chụm 2 ngón                     : phóng to/thu nhỏ chữ
+  Nhấn giữ trên màn hình          : chọn chữ, sao chép, dán
+  Vuốt lên trên phím "-"          : gõ ký tự |
+  ~/.mkshrc                       : file cấu hình riêng của bạn
+  ~/bin                           : đặt script của bạn ở đây (đã nằm trong PATH)
+  ~/sdcard                        : bộ nhớ trong (cần cấp quyền trong Cài đặt)
+HELP
+}
+
+# ---- Banner chào ----
+# (dùng mã màu thuần, không dùng các biến có ký tự \001 của prompt)
+_pc="${_e}[1;36m"; _pd="${_e}[2m"; _pr="${_e}[0m"
+printf '%s\n' "${_pc}  TDaude${_pr} ${_pd}v${TDAUDE_VERSION} - $(uname -m) - Android $(getprop ro.build.version.release 2>/dev/null)${_pr}"
+printf '%s\n' "${_pd}  gõ tdhelp để xem mẹo${_pr}"
+
+# ---- File cấu hình riêng của người dùng (nạp sau cùng) ----
+[ -r "$HOME/.mkshrc" ] && . "$HOME/.mkshrc"

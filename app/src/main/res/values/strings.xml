@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">TDaude</string>
+    <string name="drawer_subtitle">Terminal for Android</string>
+    <string name="sessions_header">SESSIONS</string>
+    <string name="session_name">Session %1$d</string>
+    <string name="session_exited">Exited (%1$d)</string>
+    <string name="session_counter">%1$d / %2$d</string>
+    <string name="btn_new">+ New</string>
+    <string name="btn_keyboard">Keyboard</string>
+    <string name="btn_settings">Settings</string>
+    <string name="rename_title">Rename session</string>
+    <string name="menu_theme">Color theme</string>
+    <string name="menu_font_up">Increase font size</string>
+    <string name="menu_font_down">Decrease font size</string>
+    <string name="menu_keys">Extra keys: %1$s</string>
+    <string name="menu_keep_screen">Keep screen on: %1$s</string>
+    <string name="menu_wakelock">Keep CPU awake (wake lock): %1$s</string>
+    <string name="menu_storage">Grant storage access</string>
+    <string name="menu_about">About TDaude</string>
+    <string name="state_on">ON</string>
+    <string name="state_off">OFF</string>
+    <string name="theme_title">Choose color theme</string>
+    <string name="about_text">TDaude %1$s\nA terminal for Android.\n\nTerminal core: Termux (Apache-2.0).</string>
+    <string name="storage_granted">Storage access granted. Shortcut: ~/sdcard</string>
+    <string name="storage_denied">Storage access denied</string>
+    <string name="notif_channel">Terminal sessions</string>
+    <string name="notif_text">%1$d session(s) running</string>
+    <string name="notif_text_wake">%1$d session(s) running - CPU awake</string>
+    <string name="notif_exit">Exit</string>
+    <string name="cd_menu">Sessions</string>
+    <string name="cd_new">New session</string>
+    <string name="cd_more">More</string>
+    <string name="cd_close">Close session</string>
+</resources>

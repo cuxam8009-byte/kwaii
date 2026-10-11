@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">TDaude</string>
+    <string name="drawer_subtitle">Terminal cho Android</string>
+    <string name="sessions_header">PHIÊN LÀM VIỆC</string>
+    <string name="session_name">Phiên %1$d</string>
+    <string name="session_exited">Đã thoát (%1$d)</string>
+    <string name="session_counter">%1$d / %2$d</string>
+    <string name="btn_new">+ Phiên mới</string>
+    <string name="btn_keyboard">Bàn phím</string>
+    <string name="btn_settings">Cài đặt</string>
+    <string name="rename_title">Đổi tên phiên</string>
+    <string name="menu_theme">Giao diện màu</string>
+    <string name="menu_font_up">Tăng cỡ chữ</string>
+    <string name="menu_font_down">Giảm cỡ chữ</string>
+    <string name="menu_keys">Hàng phím phụ: %1$s</string>
+    <string name="menu_keep_screen">Giữ màn hình sáng: %1$s</string>
+    <string name="menu_wakelock">Giữ CPU chạy nền (wake lock): %1$s</string>
+    <string name="menu_storage">Cấp quyền truy cập bộ nhớ</string>
+    <string name="menu_about">Giới thiệu TDaude</string>
+    <string name="state_on">BẬT</string>
+    <string name="state_off">TẮT</string>
+    <string name="theme_title">Chọn giao diện màu</string>
+    <string name="about_text">TDaude %1$s\nTerminal cho Android.\n\nLõi terminal: Termux (Apache-2.0).</string>
+    <string name="storage_granted">Đã cấp quyền bộ nhớ. Lối tắt: ~/sdcard</string>
+    <string name="storage_denied">Chưa được cấp quyền bộ nhớ</string>
+    <string name="notif_channel">Phiên terminal</string>
+    <string name="notif_text">%1$d phiên đang chạy</string>
+    <string name="notif_text_wake">%1$d phiên đang chạy - CPU luôn thức</string>
+    <string name="notif_exit">Thoát</string>
+    <string name="cd_menu">Danh sách phiên</string>
+    <string name="cd_new">Phiên mới</string>
+    <string name="cd_more">Thêm</string>
+    <string name="cd_close">Đóng phiên</string>
+</resources>
