@@ -1,0 +1,67 @@
+<!doctype html><html lang="vi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>Zyqo Đề</title>
+<style>
+:root{--bg:#F4F6FB;--ink:#14213D;--mu:#5B6478;--ac:#4F46E5;--bd:#E1E5EF;--ok:#0F7B53;--no:#9B1C1C}
+*{box-sizing:border-box}html,body{height:100%;margin:0}
+body{font-family:system-ui,sans-serif;background:var(--bg);color:var(--ink);display:flex;flex-direction:column;padding-top:env(safe-area-inset-top)}
+header{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;background:#fff;border-bottom:1px solid var(--bd)}
+header b{font-size:17px}header small{color:var(--mu);display:block;font-size:12px}
+button{font:inherit;cursor:pointer}.ic{width:44px;height:44px;border:0;background:none;font-size:22px}
+#chat{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px}
+.b{max-width:92%;padding:12px 14px;border-radius:16px;font-size:15px;line-height:1.45;white-space:pre-wrap}
+.u{align-self:flex-end;background:var(--ac);color:#fff;border-bottom-right-radius:4px}
+.a{align-self:flex-start;background:#fff;border:1px solid var(--bd);border-bottom-left-radius:4px;width:100%}
+.q{margin:0 0 14px}.q p{margin:0 0 6px;font-weight:600}
+.o{display:flex;gap:8px;align-items:center;min-height:44px;padding:0 12px;border:1px solid var(--bd);border-radius:10px;margin-bottom:6px}
+.o input{width:20px;height:20px}
+.pri{width:100%;height:50px;border:0;border-radius:14px;background:var(--ac);color:#fff;font-weight:600;font-size:16px}
+.sec{width:100%;height:46px;margin-top:8px;border:1px solid var(--ac);border-radius:14px;background:#fff;color:var(--ac);font-weight:600}
+.tag{font-size:12px;font-weight:700;padding:3px 9px;border-radius:99px}.t1{background:#E3F6EE;color:var(--ok)}.t0{background:#FDE8E8;color:var(--no)}.tw{background:#FFF1CC;color:#6B4500}
+.r{border-top:1px solid var(--bd);padding:10px 0;font-size:14px}.mu{color:var(--mu);font-size:12px}
+footer{display:flex;gap:8px;padding:10px 12px calc(10px + env(safe-area-inset-bottom));background:#fff;border-top:1px solid var(--bd);align-items:flex-end}
+textarea{flex:1;min-height:46px;max-height:120px;border:1px solid var(--bd);border-radius:14px;padding:12px;font:inherit;resize:none;background:var(--bg)}
+.go{height:46px;padding:0 16px;border:0;border-radius:14px;background:var(--ac);color:#fff;font-weight:600}
+</style></head><body>
+<header><div><b>Zyqo Đề</b><small id="lim"></small></div><button class="ic" id="cfg" aria-label="Cài đặt API key">⚙</button></header>
+<div id="chat"><div class="b a">Gửi tài liệu, mình ra đề ngay. Dán nội dung vào ô bên dưới, hoặc bấm 📎 để chọn file .txt / .md.\nBản thử: chưa đọc PDF/Word, chưa có thanh toán.</div></div>
+<footer><button class="ic" id="att" aria-label="Đính kèm file">📎</button><input type="file" id="fi" hidden accept=".txt,.md,text/plain"><textarea id="tx" placeholder="Dán nội dung tài liệu..."></textarea><button class="go" id="go">Tạo đề</button></footer>
+<script src="core.js"></script>
+<script>
+const LIMIT=5,N=10,$=id=>document.getElementById(id),esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const day=()=>new Date().toISOString().slice(0,10),used=()=>+(localStorage.getItem("q:"+day())||0);
+const left=()=>{$("lim").textContent="Còn "+Math.max(0,LIMIT-used())+" lượt tạo đề hôm nay"};left();
+function add(h,c){const d=document.createElement("div");d.className="b "+c;d.innerHTML=h;$("chat").appendChild(d);d.scrollIntoView({block:"end"});return d}
+let doc="",busy=false;
+$("cfg").onclick=()=>{const k=prompt("Dán API key DeepSeek (chỉ lưu trên máy này):",localStorage.getItem("dsk")||"");if(k!==null)localStorage.setItem("dsk",k.trim())};
+$("att").onclick=()=>$("fi").click();
+$("fi").onchange=e=>{const f=e.target.files[0];if(!f)return;if(!/\.(txt|md)$/i.test(f.name)){add("Bản thử chỉ đọc .txt và .md. Với PDF/Word hãy copy chữ rồi dán vào ô.","a");return}
+ const r=new FileReader();r.onload=()=>{$("tx").value=r.result;add("📎 "+esc(f.name),"u")};r.readAsText(f)};
+async function ai(msgs){const k=localStorage.getItem("dsk");if(!k)throw new Error("Chưa có API key. Bấm ⚙ để nhập.");
+ const r=await fetch("https://api.deepseek.com/chat/completions",{method:"POST",headers:{"Content-Type":"application/json",Authorization:"Bearer "+k},body:JSON.stringify({model:"deepseek-chat",messages:msgs,response_format:{type:"json_object"},temperature:0.4,max_tokens:4000})});
+ if(!r.ok)throw new Error("Lỗi API "+r.status+(r.status==401?" (key sai)":r.status==402?" (hết tiền trong tài khoản)":""));
+ return (await r.json()).choices[0].message.content}
+$("go").onclick=async()=>{if(busy)return;const t=$("tx").value.trim();
+ if(t.length<200){add("Tài liệu hơi ngắn. Hãy dán ít nhất vài đoạn (từ 200 ký tự).","a");return}
+ if(used()>=LIMIT){add("Hết lượt tạo đề hôm nay. Mai quay lại nhé.","a");return}
+ busy=true;doc=t;$("tx").value="";add(esc(t.slice(0,160))+(t.length>160?"…":"")+"\n("+t.length+" ký tự)","u");
+ if(t.length>Core.MAXC)add("Tài liệu dài, mình chỉ đọc "+Core.MAXC+" ký tự đầu.","a");
+ const w=add("Đang đọc và ra đề...","a");
+ try{const qs=Core.parseQuestions(await ai(Core.buildPrompt(t,N)),t);
+  if(qs.length<3)throw new Error("AI tạo đề chưa đạt, bấm tạo lại.");
+  localStorage.setItem("q:"+day(),used()+1);left();w.remove();exam(qs)}
+ catch(e){w.textContent="⚠ "+e.message}
+ busy=false};
+function exam(base){const qs=Core.shuffleExam(base),box=add("","a");
+ box.innerHTML="<p class='mu'>"+qs.length+" câu. Chọn đáp án rồi bấm Nộp bài.</p>"+qs.map((q,i)=>"<div class='q'><p>Câu "+(i+1)+". "+esc(q.q)+"</p>"+
+  (q.type=="mcq"?q.options.map((o,j)=>"<label class='o'><input type='radio' name='q"+i+"' value='"+j+"'>"+"ABCD"[j]+". "+esc(o)+"</label>").join(""):
+  ["true","false"].map(v=>"<label class='o'><input type='radio' name='q"+i+"' value='"+v+"'>"+(v=="true"?"Đúng":"Sai")+"</label>").join(""))+"</div>").join("")+"<button class='pri'>Nộp bài và chấm điểm</button>";
+ box.querySelector(".pri").onclick=()=>{const ans={};qs.forEach((q,i)=>{const c=box.querySelector("input[name=q"+i+"]:checked");if(c)ans[i]=q.type=="mcq"?+c.value:c.value=="true"});
+  const un=qs.length-Object.keys(ans).length;if(un&&!confirm("Còn "+un+" câu chưa làm. Vẫn nộp?"))return;
+  box.querySelectorAll("input").forEach(x=>x.disabled=true);box.querySelector(".pri").remove();result(qs,ans,base)}}
+function result(qs,ans,base){const g=Core.grade(qs,ans);
+ const show=(q,v)=>q.type=="mcq"?"ABCD"[v]+". "+esc(q.options[v]):v?"Đúng":"Sai";
+ const d=add("<b style='font-size:22px'>"+g.score+"/"+g.total+" câu đúng</b><div class='mu'>Chấm tự động bằng code, không phải AI. Đáp án và giải thích do AI tạo từ tài liệu, hãy kiểm tra phần căn cứ.</div>"+
+  qs.map((q,i)=>{const it=g.items[i];return "<div class='r'><span class='tag "+(it.ok?"t1'>✓ Đúng":"t0'>✕ Sai")+"</span> <b>Câu "+(i+1)+"</b><br>"+(it.ok?"":"Bạn chọn: "+(it.given===undefined?"(bỏ trống)":show(q,it.given))+"<br>")+"Đáp án: <b>"+show(q,q.answer)+"</b><br>"+esc(q.explain)+
+  "<div class='mu'>Căn cứ: “"+esc(q.evidence||"không có")+"” "+(q.grounded?"":"<span class='tag tw'>chưa khớp tài liệu</span>")+"</div></div>"}).join("")+
+  "<button class='pri' id='again'>Làm lại (tráo câu)</button><button class='sec' id='nw'>Đề mới từ tài liệu khác</button>","a");
+ d.querySelector("#again").onclick=()=>exam(base);d.querySelector("#nw").onclick=()=>{$("tx").focus();add("Dán tài liệu mới vào ô bên dưới nhé.","a")}}
+</script></body></html>
